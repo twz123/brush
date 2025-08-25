@@ -1086,6 +1086,31 @@ EOF";
     }
 
     #[test]
+    fn parse_here_doc_with_closing_brace_in_command_substitution() -> Result<()> {
+        let input = r"$(cat <<EOF
+)
+EOF
+)
+";
+
+        let tokens = tokenize_str(input)?;
+        let _result = super::token_parser::program(
+            &Tokens {
+                tokens: tokens.as_slice(),
+            },
+            &ParserOptions::default(),
+            &SourceInfo::default(),
+        )?;
+
+        // assert_ron_snapshot!(ParseResult {
+        //     input,
+        //     result: &result
+        // });
+
+        Ok(())
+    }
+
+    #[test]
     fn parse_function_with_pipe_redirection() -> Result<()> {
         let inputs = [r"foo() { echo 1; } 2>&1 | cat", r"foo() { echo 1; } |& cat"];
 
